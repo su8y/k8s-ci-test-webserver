@@ -1,0 +1,33 @@
+image: openjdk:21-jdk
+
+stages:
+  - build-package-gradle
+  - deploy-package-gradle
+
+build-package-gradle 1/1:
+  stage: build-package-gradle
+  before_script:
+    - cd back-end
+    - chmod 777 ./gradlew
+  script:
+    - ./gradlew build
+  only:
+    - main
+    - dev
+    - merge_requests
+    - /^feat\/.*$/ # 특정 브랜치 패턴에서 실행
+
+deploy-package-gradle 1/2:
+  stage: deploy-package-gradle
+  before_script:
+    - docker build -t demo .
+  when: on_success
+
+deploy-package-gradle 2/2:
+  stage: deploy-package-gradle
+  before_script:
+    - docker build -t demo .
+  when: on_success
+  script:
+    - kubectl create ns demo
+    - kubectl apply -f deployment.yaml -n demo
