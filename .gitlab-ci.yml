@@ -7,9 +7,9 @@ stages:
 build-package-gradle 1/1:
   stage: build-package-gradle
   before_script:
-    - cd back-end
     - chmod 777 ./gradlew
   script:
+    - echo [INFO] gradle build시작
     - ./gradlew build
   only:
     - main
