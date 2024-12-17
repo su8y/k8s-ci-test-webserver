@@ -1,6 +1,5 @@
 # Use an official OpenJDK 21 runtime as a parent image
-FROM openjdk:21-jdk-alpine
-
+FROM alpine/java:21-jdk
 # Set the working directory in the container
 WORKDIR /
 
