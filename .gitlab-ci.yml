@@ -19,16 +19,13 @@ build-package-gradle 1/1:
 
 deploy-package-gradle 1/2:
   stage: deploy-package-gradle
-  before_script:
-    - echo [INFO] docker build시작
+  image: gcr.io/kaniko-project/executor:latest
   script:
-    - docker build -t demo .
-  when: on_success
+    - /kaniko/executor --context . --dockerfile Dockerfile --destination my-image:$CI_COMMIT_REF_NAME
+    - docker push my-image:$CI_COMMIT_REF_NAME
 
 deploy-package-gradle 2/2:
   stage: deploy-package-gradle
-  before_script:
-    - docker build -t demo .
   when: on_success
   script:
     - kubectl create ns demo
