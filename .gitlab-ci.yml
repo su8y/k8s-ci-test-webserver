@@ -20,6 +20,8 @@ build-package-gradle 1/1:
 deploy-package-gradle 1/2:
   stage: deploy-package-gradle
   before_script:
+    - echo [INFO] docker build시작
+  script:
     - docker build -t demo .
   when: on_success
 
