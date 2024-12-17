@@ -31,3 +31,8 @@ deploy-package-gradle 2/2:
   script:
     - kubectl create ns demo
     - kubectl apply -f deployment.yaml -n demo
+  only:
+    - main
+    - dev
+    - merge_requests
+    - /^feat\/.*$/ # 특정 브랜치 패턴에서 실행
