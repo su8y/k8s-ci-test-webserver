@@ -39,7 +39,7 @@ build-image 1/1:
      entrypoint: [""] #script tag를 사용하기 위한 override
   script:
     - echo [INFO] start image build 
-    - echo ${HARBOR_URL}
+    - echo HARBORURL= ${HARBOR_URL}
     - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
     # Gitlab에 미리 정의된 Variables 사용
     # CI_PROJECT_DIR : Dockerfile을 포함한 Source Repositry 경로
