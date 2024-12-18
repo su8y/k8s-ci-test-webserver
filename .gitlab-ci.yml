@@ -23,7 +23,7 @@ deploy-package-gradle 1/2:
   stage: build-image
   image: gcr.io/kaniko-project/executor:latest
   script:
-    - echo [INFO] start: docker build 
+    - echo [INFO] start docker build 
     - docker build -t my-demo:$CI_COMMIT_REF_NAME .
     - docker push my-demo:$CI_COMMIT_REF_NAME
 
@@ -31,7 +31,7 @@ deploy-package-gradle 2/2:
   stage: deploy-package-gradle
   when: on_success
   script:
-    - echo [INFO] start: kubectl registry
+    - echo [INFO] start kubectl registry
     - kubectl create ns my-demo
     - kubectl apply -f deployment.yaml -n my-demo:$CI_COMMIT_REF_NAME
   only:
