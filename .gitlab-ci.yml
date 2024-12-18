@@ -21,7 +21,6 @@ build-package-gradle 1/1:
 
 deploy-package-gradle 1/2:
   stage: build-image
-  image: gcr.io/kaniko-project/executor:latest
   script:
     - echo [INFO] start docker build 
     - docker build -t my-demo:$CI_COMMIT_REF_NAME .
