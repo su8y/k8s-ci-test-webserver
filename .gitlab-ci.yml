@@ -1,22 +1,18 @@
-default:
-  image: docker:24.0.5
-  services:
-    - docker:24.0.5-dind
-
-variables:
-  DOCKER_HOST: tcp://docker:2375
-  SERVICE_NAME: "demo"
-  DOCKER_DRIVER: overlay2
-  DOCKER_TLS_CERTDIR: ""
-  KUBERNETES_PRIVILEGED: "true"
-
-# servic: docker:20.10.17-dind
+# default:
+#   image: docker:24.0.5
+#   services:
+#     - docker:24.0.5-dind
+# variables:
+#   DOCKER_HOST: tcp://docker:2375
+#   SERVICE_NAME: "demo"
+#   DOCKER_DRIVER: overlay2
+#   DOCKER_TLS_CERTDIR: ""
+#   KUBERNETES_PRIVILEGED: "true"
 
 stages:
-  # build image를 위해서 잠깐 없애놈
-  # - build-package-gradle 
+  - build-package-gradle
   - build-image
-  - deploy-package-gradle
+  - deploy-image
 
 build-package-gradle 1/1:
   image: alpine/java:21-jdk
@@ -39,15 +35,11 @@ build-image 1/1:
      entrypoint: [""] #script tag를 사용하기 위한 override
   script:
     - echo [INFO] start image build 
-    - echo HARBORURL= ${HARBOR_URL}
     - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    # Gitlab에 미리 정의된 Variables 사용
-    # CI_PROJECT_DIR : Dockerfile을 포함한 Source Repositry 경로
-    # CI_COMMIT_SHORT_SHA : Commit SHA의 앞 8자를 tag로 사용
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
 
-deploy-package-gradle 2/2:
-  stage: deploy-package-gradle
+deploy-image 1/1:
+  stage: deploy-image
   when: on_success
   script:
     - echo [INFO] start kubectl registry
