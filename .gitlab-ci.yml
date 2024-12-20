@@ -45,6 +45,7 @@ deploy-image 1/1:
     name: $KUBECTL_IMAGE
     entrypoint: [""]
   script:
+    - cat ~/.kube/config
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl config set-context --current --namespace=$RELEASE_NAME
