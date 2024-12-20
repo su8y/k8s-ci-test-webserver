@@ -1,5 +1,5 @@
 variables:
-  KUBECTL_IMAGE: bitnami/helm:latest
+  KUBECTL_IMAGE: bitnami/kubectl:latest
   HELM_IMAGE: dtzar/helm-kubectl:3.16.4
   CHART_PATH: ./helm-chart/$CI_PROJECT_NAME
   RELEASE_NAME: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
@@ -13,6 +13,10 @@ deploy-image 1/1:
   image:
     name: $KUBECTL_IMAGE
     entrypoint: [""]
+  before_script:
+    - curl https://get.helm.sh/helm-v3.9.0-linux-amd64.tar.gz -o helm.tar.gz
+    - tar -xvzf helm.tar.gz
+    - mv linux-amd64/helm /usr/local/bin/helm
   script:
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
     - kubectl config view
