@@ -5,38 +5,7 @@ variables:
   RELEASE_NAME: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
 
 stages:
-  - build-package-gradle
-  - build-image
   - deploy-image
-
-build-package-gradle 1/1:
-  image: alpine/java:21-jdk
-  stage: build-package-gradle
-  before_script:
-    - chmod 777 ./gradlew
-  script:
-    - echo [INFO] gradle build시작
-    - ./gradlew build
-  artifacts:
-    paths:
-      - build/libs/*.jar
-  only:
-    - main
-    - dev
-    - merge_requests
-    - /^feat\/.*$/ # 특정 브랜치 패턴에서 실행
-
-build-image 1/1:
-  stage: build-image
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""] #script tag를 사용하기 위한 override
-  script:
-    - echo [INFO] start image build
-    - ls
-    - ls -r
-    - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
 
 deploy-image 1/1:
   stage: deploy-image
@@ -45,9 +14,9 @@ deploy-image 1/1:
     name: $HELM_IMAGE
     entrypoint: [""]
   script:
-    - echo "$KUBE_CONFIG" | base64 -d > decoded_kubeconfig.yaml
-    - cat decoded_kubeconfig.yaml
-    - echo "$KUBE_CONFIG" | base64 -d
+    - ls -a /
+    - ls -a ~
+    - ls -a $HOME/.kube
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
     - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
