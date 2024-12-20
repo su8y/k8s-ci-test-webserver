@@ -1,6 +1,6 @@
 variables:
   KUBECTL_IMAGE: bitnami/kubectl:latest
-  HELM_IMAGE: alpine/helm:3.12.0
+  HELM_IMAGE: dtzar/helm-kubectl:3.16.4
   CHART_PATH: ./helm-chart/$CI_PROJECT_NAME
   RELEASE_NAME: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
 
