@@ -11,7 +11,7 @@ deploy-image 1/1:
   stage: deploy-image
   when: on_success
   image:
-    name: $HELM_IMAGE
+    name: $KUBECTL_IMAGE
     entrypoint: [""]
   script:
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
