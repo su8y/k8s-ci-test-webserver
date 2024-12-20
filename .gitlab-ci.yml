@@ -22,6 +22,9 @@ build-package-gradle 1/1:
   script:
     - echo [INFO] gradle build시작
     - ./gradlew build
+  artifacts:
+    paths:
+      - build/libs/*.jar
   only:
     - main
     - dev
