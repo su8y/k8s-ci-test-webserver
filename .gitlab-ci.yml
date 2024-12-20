@@ -35,6 +35,8 @@ build-image 1/1:
     entrypoint: [""] #script tag를 사용하기 위한 override
   script:
     - echo [INFO] start image build
+    - ls
+    - ls -r
     - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
 
