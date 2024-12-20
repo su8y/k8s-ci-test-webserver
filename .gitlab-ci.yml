@@ -2,7 +2,7 @@ variables:
   KUBECTL_IMAGE: bitnami/kubectl:latest
   HELM_IMAGE: alpine/helm:3.12.0
   CHART_PATH: ./helm-chart/$CI_PROJECT_NAME
-  RELEASE_NAME: $CI_PROJECT_NAME-$CI_COOMIT_BRANCH
+  RELEASE_NAME: $CI_PROJECT_NAME-$CI_COMMIT_REF_NAME
 
 stages:
   - build-package-gradle
@@ -36,12 +36,12 @@ build-image 1/1:
     - ls
     - ls -r
     - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_NAME:$CI_COMMIT_BRANCH
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
 
 deploy-image 1/1:
   stage: deploy-image
   when: on_success
-  image:
+  image: 
     name: $KUBECTL_IMAGE
     entrypoint: [""]
   script:
@@ -50,10 +50,10 @@ deploy-image 1/1:
     - kubectl config set-context --current --namespace=$RELEASE_NAME
 
     - helm upgrade --install $RELEASE_NAME $CHART_PATH \
-      --set image.repository=$HARBOR_URL/root/demo \
+      --set image.repository=$HARBOR_URL/$RELEASE_NAME \
       --set image.tag=$RELEASE_NAME \
       --set service.name=$RELEASE_NAME \
-      --set ingress.paths[0].path=/deploy/$RESLEASE_NAME/ \
+      --set ingress.paths[0].path=/deploy/{RESLEASE_NAME}/ \
       --set ingress.paths[0].backend.service.name=$RELEASE_NAME
       # --set service.port=80 \
       # --set ingress.paths[0].pathType=Prefix \
