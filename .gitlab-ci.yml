@@ -42,7 +42,7 @@ deploy-image 1/1:
   stage: deploy-image
   when: on_success
   image:
-    name: $KUBECTL_IMAGE
+    name: $HELM_IMAGE
     entrypoint: [""]
   script:
     - echo "$KUBE_CONFIG" | base64 -d > decoded_kubeconfig.yaml
