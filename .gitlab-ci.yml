@@ -45,6 +45,8 @@ deploy-image 1/1:
     name: $KUBECTL_IMAGE
     entrypoint: [""]
   script:
+    - echo "$KUBE_CONFIG" | base64 -d > decoded_kubeconfig.yaml
+    - cat decoded_kubeconfig.yaml
     - echo "$KUBE_CONFIG" | base64 -d
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
     - kubectl config get-contexts
