@@ -14,8 +14,8 @@ deploy-image 1/1:
     name: $KUBE_IMAGE
     entrypoint: [""]
   script:
-    - kubectl config view
     - echo "$KUBE_CONFIG" | base64 -d > ~/.kube/config
+    - kubectl config view
     - kubectl config get-contexts
     - kubectl config use-context $KUBE_CONTEXT
     - kubectl config set-context --current --namespace=$RELEASE_NAME
