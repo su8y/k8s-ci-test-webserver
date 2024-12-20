@@ -11,7 +11,7 @@ deploy-image 1/1:
   stage: deploy-image
   when: on_success
   image:
-    name: $KUBE_IMAGE
+    name: $KUBECTL_IMAGE
     entrypoint: [""]
   script:
     - mkdir -p /root/.kube 
