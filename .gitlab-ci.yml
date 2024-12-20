@@ -31,10 +31,10 @@ build-package-gradle 1/1:
 build-image 1/1:
   stage: build-image
   image:
-     name: gcr.io/kaniko-project/executor:debug
-     entrypoint: [""] #script tag를 사용하기 위한 override
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""] #script tag를 사용하기 위한 override
   script:
-    - echo [INFO] start image build 
+    - echo [INFO] start image build
     - echo "{\"auths\":{\"$HARBOR_URL\":{\"username\":\"$HARBOR_USER\",\"password\":\"$HARBOR_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $HARBOR_URL/$CI_PROJECT_PATH:$CI_COMMIT_SHORT_SHA
 
@@ -43,6 +43,8 @@ deploy-image 1/1:
   when: on_success
   script:
     - echo [INFO] start kubectl registry
+    - ls
+    - ls -r
     - kubectl create ns my-demo
     - kubectl apply -f deployment.yaml -n my-demo:$CI_COMMIT_REF_NAME
   only:
