@@ -1,0 +1,40 @@
+stages:
+  - build-package-gradle
+  - build-image
+  - deploy-image
+
+build-package-gradle 1/1:
+  image: openjdk:17-jdk-slim
+  stage: build-package-gradle
+  before_script:
+    - chmod 777 ./gradlew
+  script:
+    - ./gradlew build
+  artifacts:
+    paths:
+      - build/libs/*.jar
+  only:
+    - main
+    - dev
+    - merge_requests
+    - /^feat\/.*$/ 
+
+build-image 1/1:
+  stage: build-image
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""] 
+  script:
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination 192.168.4.103/registry/:$CI_PROJECT_PATH-$CI_COMMIT_SHORT_SHA
+
+deploy-image 1/1:
+  stage: deploy-image
+  when: on_success
+  script:
+    - kubectl create ns my-demo
+    - kubectl apply -f deployment.yaml -n my-demo:$CI_COMMIT_REF_NAME
+  only:
+    - main
+    - dev
+    - merge_requests
+    - /^feat\/.*$/ # 특정 브랜치 패턴에서 실행
